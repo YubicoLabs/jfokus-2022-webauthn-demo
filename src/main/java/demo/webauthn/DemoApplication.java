@@ -164,6 +164,16 @@ public class DemoApplication {
     sessions.endSession(sessionToken);
   }
 
+  public boolean deleteCredential(SessionToken sessionToken, CredentialId credentialId) {
+    Optional<UserId> userId = sessions.getSession(sessionToken);
+    if (userId.isPresent()) {
+      database.deleteWebauthnCredential(userId.get(), credentialId);
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   public Either<String, RegistrationRequest> startRegistration(SessionToken sessionToken) {
     log.trace("startRegistration session: {}", sessionToken);
 

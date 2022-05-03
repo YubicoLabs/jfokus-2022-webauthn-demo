@@ -3,7 +3,7 @@ import clsx from 'clsx';
 
 import { withStyles } from '@material-ui/core/styles';
 
-import { getSession } from '../api';
+import { getSession, removeAuthenticator } from '../api';
 
 import CreateUser from './CreateUser';
 import PageLoadingSpinner from './PageLoadingSpinner';
@@ -53,6 +53,12 @@ function Main({ classes }) {
   };
   useEffect(refreshSession, [sessionInfo?.userId]);
 
+  const onDeleteCredential = id => {
+    removeAuthenticator(id)
+      .finally(() => refreshSession());
+  };
+
+
   const loggedIn = sessionInfo !== null;
 
   if (state === 'register') {
@@ -71,6 +77,7 @@ function Main({ classes }) {
       <UserMainPage
         sessionInfo={sessionInfo}
         onAddCredential={() => setState('register')}
+        onDeleteCredential={onDeleteCredential}
         onLogout={refreshSession}
       />
     );

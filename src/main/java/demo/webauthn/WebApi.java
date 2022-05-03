@@ -37,10 +37,12 @@ import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.CookieParam;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -256,6 +258,21 @@ public class WebApi {
                     + result.right().get().getSessionToken().getValue()
                     + ";Secure;HttpOnly;SameSite=strict;Path=/"))
         .build();
+  }
+
+  @Path("credential/{credentialId}")
+  @DELETE
+  public Response deleteCredential(
+      @NonNull @CookieParam("sessionToken") SessionToken sessionToken,
+      @NonNull @PathParam("credentialId") CredentialId credentialId)
+      throws SQLException {
+    if (server.deleteCredential(sessionToken, credentialId)) {
+      return Response.ok("{\"success\":true}").build();
+    } else {
+      return messagesJson(
+              Response.status(Status.BAD_REQUEST), "Invalid session or unknown credential ID.")
+          .build();
+    }
   }
 
   @Path("session")

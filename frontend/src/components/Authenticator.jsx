@@ -3,11 +3,13 @@ import dayjs from 'dayjs';
 
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
+import IconButton from '@material-ui/core/IconButton';
 import Button from '@material-ui/core/Button';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 
+import DeleteIcon from '@material-ui/icons/Delete';
 import Checked from '@material-ui/icons/CheckCircle';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
@@ -44,13 +46,31 @@ const styles = theme => ({
     marginLeft: theme.spacing(2),
     marginBottom: theme.spacing(2),
   },
+  iconContainer: {
+    backgroundColor: '#efefef',
+    borderRadius: '50%',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 52,
+    height: 52,
+    flexShrink: 0,
+    color: theme.palette.text.primary,
+  },
 });
 
+function IconContainerComp({ classes, children }) {
+  return <div className={classes.iconContainer}>{children}</div>;
+}
+
+const IconContainer = withStyles(styles)(IconContainerComp);
 
 function AuthenticatorComp({
   classes,
   createTime,
   lastUseTime,
+  id,
+  deleteAuth,
 }) {
   return (
     <div className={classes.authenticatorContainer}>
@@ -59,6 +79,12 @@ function AuthenticatorComp({
           <Typography color="textSecondary" variant="caption" component="p">
             Last used: {dayjs(lastUseTime).format('MMMM DD YYYY, h:mm A')}
           </Typography>
+        </div>
+
+        <div>
+          <IconButton onClick={() => deleteAuth(id)}>
+            <DeleteIcon />
+          </IconButton>
         </div>
       </div>
     </div>
@@ -73,6 +99,7 @@ function AuthenticatorsComp({
   authenticators,
   title,
   onAdd,
+  deleteAuth,
 }) {
   return (
     <ExpansionPanel defaultExpanded={expanded}>
@@ -90,6 +117,7 @@ function AuthenticatorsComp({
           authenticators.map(auth => (
             <Authenticator
               key={auth.id}
+              deleteAuth={deleteAuth}
               {...auth}
             />
           ))

@@ -24,6 +24,10 @@ export function getSession() {
   return handle(apiUrl('session'), 'GET');
 }
 
+export function removeAuthenticator(id) {
+  return handle(apiUrl(`credential/${id}`), 'DELETE');
+}
+
 export function register() {
   const formData = new URLSearchParams();
   return handle(apiUrl('register'), 'POST', formData);

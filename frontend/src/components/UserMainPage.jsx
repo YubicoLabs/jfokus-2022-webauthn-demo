@@ -36,6 +36,7 @@ function UserMainPage({
   classes,
   sessionInfo: { username, userId, credentials = []},
   onAddCredential,
+  onDeleteCredential,
   onLogout,
 }) {
   const [enrollModalOpened, setEnrollModalOpened] = useState(false);
@@ -63,6 +64,7 @@ function UserMainPage({
         <SecurityKeys
           authenticators={credentials}
           onAdd={onAddCredential}
+          deleteAuth={onDeleteCredential}
         />
       </div>
 

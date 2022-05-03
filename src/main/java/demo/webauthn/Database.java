@@ -318,6 +318,16 @@ public class Database implements CredentialRepository {
         .execute();
   }
 
+  public void deleteWebauthnCredential(final UserId userId, final CredentialId credentialId) {
+    final int numDeleted =
+        jooq()
+            .deleteFrom(Tables.WEBAUTHN_CREDENTIALS)
+            .where(Tables.WEBAUTHN_CREDENTIALS.USER_ID.eq(userId.getId()))
+            .and(Tables.WEBAUTHN_CREDENTIALS.CREDENTIAL_ID.eq(credentialId.getId().getBytes()))
+            .execute();
+    log.info("Dropped credential {} from {} ({} rows)", credentialId, userId, numDeleted);
+  }
+
   public static ByteArray userIdToUserHandle(final UserId userId) throws Base64UrlException {
     return new ByteArray(userId.getId().getBytes(StandardCharsets.UTF_8));
   }
