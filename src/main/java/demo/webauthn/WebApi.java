@@ -24,6 +24,8 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.yubico.util.Either;
+import demo.webauthn.data.AssertionRequestWrapper;
+import demo.webauthn.data.RegistrationRequest;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -138,22 +140,122 @@ public class WebApi {
   public Response login(
       @NonNull @FormParam("username") Username username,
       @NonNull @FormParam("password") String password)
-      throws ExecutionException {
+      throws MalformedURLException, ExecutionException {
 
     final Optional<UserId> userId = server.checkUserPassword(username, Secret.of(password));
     if (userId.isPresent()) {
-      SessionToken sessionToken = server.createSession(userId.get());
-      return startResponse("authenticate", new LoginSuccessResponse(userId.get(), username))
-          .cookie(
-              NewCookie.valueOf(
-                  "sessionToken="
-                      + sessionToken.getValue()
-                      + ";Secure;HttpOnly;SameSite=strict;Path=/"))
-          .build();
+      if (server.userHasWebauthnCredentials(userId.get())) {
+        return startAuthentication(userId.get());
+
+      } else {
+        SessionToken sessionToken = server.createSession(userId.get());
+        return startResponse("authenticate", new LoginSuccessResponse(userId.get(), username))
+            .cookie(
+                NewCookie.valueOf(
+                    "sessionToken="
+                        + sessionToken.getValue()
+                        + ";Secure;HttpOnly;SameSite=strict;Path=/"))
+            .build();
+      }
     } else {
       return messagesJson(Response.status(Status.FORBIDDEN), "Incorrect username or password.")
           .build();
     }
+  }
+
+  private final class StartRegistrationResponse {
+    public final boolean success = true;
+    public final RegistrationRequest request;
+    public final StartRegistrationActions actions = new StartRegistrationActions();
+
+    private StartRegistrationResponse(RegistrationRequest request) throws MalformedURLException {
+      this.request = request;
+    }
+  }
+
+  private final class StartRegistrationActions {
+    public final URL finish = uriInfo.getAbsolutePathBuilder().path("finish").build().toURL();
+
+    private StartRegistrationActions() throws MalformedURLException {}
+  }
+
+  @Consumes("application/x-www-form-urlencoded")
+  @Path("register")
+  @POST
+  public Response startRegistration(@CookieParam("sessionToken") SessionToken sessionToken)
+      throws MalformedURLException, ExecutionException {
+    log.trace("startRegistration session: {}", sessionToken);
+    Either<String, RegistrationRequest> result = server.startRegistration(sessionToken);
+
+    if (result.isRight()) {
+      return startResponse("startRegistration", new StartRegistrationResponse(result.right().get()))
+          .build();
+    } else {
+      return messagesJson(Response.status(Status.BAD_REQUEST), result.left().get()).build();
+    }
+  }
+
+  @Path("register/finish")
+  @POST
+  public Response finishRegistration(
+      @NonNull @CookieParam("sessionToken") SessionToken sessionToken,
+      @NonNull String responseJson) {
+    log.trace("finishRegistration responseJson: {}", responseJson);
+    Either<List<String>, DemoApplication.SuccessfulRegistrationResult> result =
+        server.finishRegistration(responseJson, sessionToken);
+    return finishResponse(
+            result,
+            "Attestation verification failed; further error message(s) were unfortunately lost to an internal server error.",
+            "finishRegistration",
+            responseJson)
+        .build();
+  }
+
+  private final class StartAuthenticationResponse {
+    public final boolean success = true;
+    public final AssertionRequestWrapper request;
+    public final StartAuthenticationActions actions = new StartAuthenticationActions();
+
+    private StartAuthenticationResponse(AssertionRequestWrapper request)
+        throws MalformedURLException {
+      this.request = request;
+    }
+  }
+
+  private final class StartAuthenticationActions {
+    public final URL finish = uriInfo.getAbsolutePathBuilder().path("finish").build().toURL();
+
+    private StartAuthenticationActions() throws MalformedURLException {}
+  }
+
+  private Response startAuthentication(@NonNull UserId userId) throws MalformedURLException {
+    log.trace("startAuthentication userId: {}", userId);
+
+    Either<List<String>, AssertionRequestWrapper> request = server.startAuthentication(userId);
+    return startResponse(
+            "startAuthentication", new StartAuthenticationResponse(request.right().get()))
+        .build();
+  }
+
+  @Path("authenticate/finish")
+  @POST
+  public Response finishAuthentication(@NonNull String responseJson) {
+    log.trace("finishAuthentication responseJson: {}", responseJson);
+
+    Either<List<String>, DemoApplication.SuccessfulAuthenticationResult> result =
+        server.finishAuthentication(responseJson);
+
+    return finishResponse(
+            result,
+            "Authentication verification failed; further error message(s) were unfortunately lost to an internal server error.",
+            "finishAuthentication",
+            responseJson)
+        .cookie(
+            NewCookie.valueOf(
+                "sessionToken="
+                    + result.right().get().getSessionToken().getValue()
+                    + ";Secure;HttpOnly;SameSite=strict;Path=/"))
+        .build();
   }
 
   @Path("session")
@@ -189,6 +291,24 @@ public class WebApi {
     } catch (IOException e) {
       log.error("Failed to encode response as JSON: {}", request, e);
       return jsonFail();
+    }
+  }
+
+  private ResponseBuilder finishResponse(
+      Either<List<String>, ?> result,
+      String jsonFailMessage,
+      String methodName,
+      String responseJson) {
+    if (result.isRight()) {
+      try {
+        return Response.ok(writeJson(result.right().get()));
+      } catch (JsonProcessingException e) {
+        log.error("Failed to encode response as JSON: {}", result.right().get(), e);
+        return messagesJson(Response.ok(), jsonFailMessage);
+      }
+    } else {
+      log.debug("fail {} responseJson: {}", methodName, responseJson);
+      return messagesJson(Response.status(Status.BAD_REQUEST), result.left().get());
     }
   }
 

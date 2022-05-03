@@ -7,6 +7,7 @@ import { getSession } from '../api';
 
 import CreateUser from './CreateUser';
 import PageLoadingSpinner from './PageLoadingSpinner';
+import Register from './Register';
 import Signin from './Signin';
 import UserMainPage from './UserMainPage';
 
@@ -46,6 +47,7 @@ function Main({ classes }) {
       .then(data => setSessionInfo({
         username: data.username,
         userId: data.userId,
+        credentials: data.credentials,
       }))
       .catch(() => setSessionInfo(null));
   };
@@ -53,10 +55,22 @@ function Main({ classes }) {
 
   const loggedIn = sessionInfo !== null;
 
-  if (loggedIn) {
+  if (state === 'register') {
+    comp = (
+      <Register
+        onAbort={() => setState(null)}
+        onSuccess={() => {
+          refreshSession();
+          setState(null);
+        }}
+      />
+    );
+
+  } else if (loggedIn) {
     comp = (
       <UserMainPage
         sessionInfo={sessionInfo}
+        onAddCredential={() => setState('register')}
         onLogout={refreshSession}
       />
     );

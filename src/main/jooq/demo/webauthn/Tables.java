@@ -5,6 +5,7 @@ package demo.webauthn;
 
 
 import demo.webauthn.tables.Users;
+import demo.webauthn.tables.WebauthnCredentials;
 
 
 /**
@@ -17,4 +18,9 @@ public class Tables {
      * The table <code>webauthn_demo.users</code>.
      */
     public static final Users USERS = Users.USERS;
+
+    /**
+     * The table <code>webauthn_demo.webauthn_credentials</code>.
+     */
+    public static final WebauthnCredentials WEBAUTHN_CREDENTIALS = WebauthnCredentials.WEBAUTHN_CREDENTIALS;
 }

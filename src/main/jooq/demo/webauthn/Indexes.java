@@ -5,6 +5,7 @@ package demo.webauthn;
 
 
 import demo.webauthn.tables.Users;
+import demo.webauthn.tables.WebauthnCredentials;
 
 import org.jooq.Index;
 import org.jooq.OrderField;
@@ -21,6 +22,7 @@ public class Indexes {
     // INDEX definitions
     // -------------------------------------------------------------------------
 
+    public static final Index WEBAUTHN_CREDENTIALS_USER_AND_CREDID = Indexes0.WEBAUTHN_CREDENTIALS_USER_AND_CREDID;
     public static final Index USERS_USERNAME_AND_PASSWORD = Indexes0.USERS_USERNAME_AND_PASSWORD;
 
     // -------------------------------------------------------------------------
@@ -28,6 +30,7 @@ public class Indexes {
     // -------------------------------------------------------------------------
 
     private static class Indexes0 {
+        public static Index WEBAUTHN_CREDENTIALS_USER_AND_CREDID = Internal.createIndex("user_and_credid", WebauthnCredentials.WEBAUTHN_CREDENTIALS, new OrderField[] { WebauthnCredentials.WEBAUTHN_CREDENTIALS.USER_ID, WebauthnCredentials.WEBAUTHN_CREDENTIALS.CREDENTIAL_ID }, false);
         public static Index USERS_USERNAME_AND_PASSWORD = Internal.createIndex("username_and_password", Users.USERS, new OrderField[] { Users.USERS.USERNAME, Users.USERS.PASSWORD_BCRYPT }, false);
     }
 }

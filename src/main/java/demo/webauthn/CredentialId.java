@@ -14,20 +14,18 @@
 
 package demo.webauthn;
 
-import com.yubico.webauthn.data.RelyingPartyIdentity;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import com.fasterxml.jackson.annotation.JsonValue;
+import com.yubico.webauthn.data.ByteArray;
+import com.yubico.webauthn.data.exception.Base64UrlException;
+import lombok.AllArgsConstructor;
+import lombok.Value;
 
-public class Config {
+@Value
+@AllArgsConstructor
+public class CredentialId {
+  @JsonValue ByteArray id;
 
-  public static final int port = 8443;
-
-  public static final Set<String> origins =
-      Collections.unmodifiableSet(
-          new HashSet<>(Arrays.asList("https://localhost:8443", "https://localhost:8080")));
-
-  public static final RelyingPartyIdentity rpIdentity =
-      RelyingPartyIdentity.builder().id("localhost").name("WebAuthn demo").build();
+  public CredentialId(String base64url) throws Base64UrlException {
+    this(ByteArray.fromBase64Url(base64url));
+  }
 }

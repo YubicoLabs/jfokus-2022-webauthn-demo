@@ -12,22 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package demo.webauthn;
+package demo.webauthn.data;
 
-import com.yubico.webauthn.data.RelyingPartyIdentity;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import com.yubico.webauthn.data.ByteArray;
+import com.yubico.webauthn.data.PublicKeyCredentialCreationOptions;
+import lombok.EqualsAndHashCode;
+import lombok.Value;
 
-public class Config {
+@Value
+@EqualsAndHashCode(callSuper = false)
+public class RegistrationRequest {
 
-  public static final int port = 8443;
-
-  public static final Set<String> origins =
-      Collections.unmodifiableSet(
-          new HashSet<>(Arrays.asList("https://localhost:8443", "https://localhost:8080")));
-
-  public static final RelyingPartyIdentity rpIdentity =
-      RelyingPartyIdentity.builder().id("localhost").name("WebAuthn demo").build();
+  ByteArray requestId;
+  PublicKeyCredentialCreationOptions publicKeyCredentialCreationOptions;
 }

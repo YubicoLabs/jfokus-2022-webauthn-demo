@@ -14,20 +14,16 @@
 
 package demo.webauthn;
 
-import com.yubico.webauthn.data.RelyingPartyIdentity;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import java.time.Instant;
+import java.util.Optional;
+import lombok.Value;
 
-public class Config {
-
-  public static final int port = 8443;
-
-  public static final Set<String> origins =
-      Collections.unmodifiableSet(
-          new HashSet<>(Arrays.asList("https://localhost:8443", "https://localhost:8080")));
-
-  public static final RelyingPartyIdentity rpIdentity =
-      RelyingPartyIdentity.builder().id("localhost").name("WebAuthn demo").build();
+/** View-layer representation of a WebAuthn credential. */
+@Value
+public class WebauthnCredentialView {
+  @JsonProperty private final CredentialId id;
+  @JsonProperty private final UserId userId;
+  @JsonProperty private final Optional<Instant> createTime;
+  @JsonProperty private final Optional<Instant> lastUseTime;
 }

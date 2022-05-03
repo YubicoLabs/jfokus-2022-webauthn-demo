@@ -5,6 +5,7 @@ package demo.webauthn;
 
 
 import demo.webauthn.tables.Users;
+import demo.webauthn.tables.WebauthnCredentials;
 
 import java.util.Arrays;
 import java.util.List;
@@ -20,7 +21,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class WebauthnDemo extends SchemaImpl {
 
-    private static final long serialVersionUID = 1641950546;
+    private static final long serialVersionUID = -1729074287;
 
     /**
      * The reference instance of <code>webauthn_demo</code>
@@ -31,6 +32,11 @@ public class WebauthnDemo extends SchemaImpl {
      * The table <code>webauthn_demo.users</code>.
      */
     public final Users USERS = Users.USERS;
+
+    /**
+     * The table <code>webauthn_demo.webauthn_credentials</code>.
+     */
+    public final WebauthnCredentials WEBAUTHN_CREDENTIALS = WebauthnCredentials.WEBAUTHN_CREDENTIALS;
 
     /**
      * No further instances allowed
@@ -48,6 +54,7 @@ public class WebauthnDemo extends SchemaImpl {
     @Override
     public final List<Table<?>> getTables() {
         return Arrays.<Table<?>>asList(
-            Users.USERS);
+            Users.USERS,
+            WebauthnCredentials.WEBAUTHN_CREDENTIALS);
     }
 }

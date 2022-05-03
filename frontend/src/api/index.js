@@ -23,3 +23,22 @@ export function logout() {
 export function getSession() {
   return handle(apiUrl('session'), 'GET');
 }
+
+export function register() {
+  const formData = new URLSearchParams();
+  return handle(apiUrl('register'), 'POST', formData);
+}
+
+export function registerFinish(request, pkc) {
+  return handle(request.actions.finish, 'POST', {
+    requestId: request.request.requestId,
+    credential: pkc,
+  });
+}
+
+export function verifyFinish(request, pkc) {
+  return handle(request.actions.finish, 'POST', {
+    requestId: request.request.requestId,
+    credential: pkc,
+  });
+}

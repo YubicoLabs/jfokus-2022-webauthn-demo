@@ -8,6 +8,7 @@ import Typography from '@material-ui/core/Typography';
 
 import { logout } from '../api';
 
+import { SecurityKeys } from './Authenticator';
 import ContentPage from './ContentPage';
 
 
@@ -33,7 +34,8 @@ const styles = theme => ({
 
 function UserMainPage({
   classes,
-  sessionInfo: { username, userId},
+  sessionInfo: { username, userId, credentials = []},
+  onAddCredential,
   onLogout,
 }) {
   const [enrollModalOpened, setEnrollModalOpened] = useState(false);
@@ -56,6 +58,13 @@ function UserMainPage({
       >
         <strong>User: {username}</strong>
       </Typography>
+
+      <div className={clsx(classes.innerContent)}>
+        <SecurityKeys
+          authenticators={credentials}
+          onAdd={onAddCredential}
+        />
+      </div>
 
       <br/>
 
