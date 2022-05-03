@@ -8,6 +8,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import { register, registerFinish } from '../api';
 
 import VerifyCard from './VerifyCard.jsx';
+import RegisterForm from './RegisterForm.jsx';
 import {
   GenericCardHeader,
   GenericCard,
@@ -42,11 +43,8 @@ function Register({
 }) {
   const [submitting, setSubmitting] = useState(false);
   const [webauthnInProgress, setWebauthnInProgress] = useState(true);
-
-  const finishRegistration = (data, pkc) => {
-    registerFinish(data, pkc)
-      .then(onSuccess);
-  };
+  const [pkc, setPkc] = useState(null);
+  const [finishData, setFinishData] = useState(null);
 
   const runRegistration = () => {
     setSubmitting(true);
@@ -58,11 +56,23 @@ function Register({
           return data;
         } else if (data.request) {
           return webauthnJson.create({ publicKey: data.request.publicKeyCredentialCreationOptions })
-            .then(pkc => finishRegistration(data, pkc))
+            .then(pkc => {
+              setPkc(pkc);
+              setFinishData(data);
+            })
             .finally(() => setWebauthnInProgress(false));
         } else {
           throw new Error('Unknown registration result');
         }
+      });
+  };
+
+  const finishRegistration = nickname => {
+    registerFinish(finishData, pkc, nickname)
+      .then(data => {
+        onSuccess(data);
+        setPkc(null);
+        setFinishData(null);
       });
   };
 
@@ -78,6 +88,20 @@ function Register({
               <CircularProgress color="primary" />
             </div>
           </VerifyCard>
+        </GenericCardContent>
+      </GenericCard>
+    );
+
+  } else if (pkc) {
+    comp = (
+      <GenericCard>
+        <GenericCardHeader text="Success!" />
+
+        <GenericCardContent>
+          <RegisterForm
+            onSubmit={finishRegistration}
+            submitting={submitting}
+          />
         </GenericCardContent>
       </GenericCard>
     );

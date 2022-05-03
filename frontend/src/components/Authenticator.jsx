@@ -67,6 +67,7 @@ const IconContainer = withStyles(styles)(IconContainerComp);
 
 function AuthenticatorComp({
   classes,
+  nickname,
   createTime,
   lastUseTime,
   id,
@@ -76,6 +77,8 @@ function AuthenticatorComp({
     <div className={classes.authenticatorContainer}>
       <div className={classes.authenticator}>
         <div>
+          <Typography variant="body1">{nickname}</Typography>
+
           <Typography color="textSecondary" variant="caption" component="p">
             Last used: {dayjs(lastUseTime).format('MMMM DD YYYY, h:mm A')}
           </Typography>

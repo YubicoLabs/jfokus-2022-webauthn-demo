@@ -24,6 +24,7 @@ import lombok.Value;
 public class WebauthnCredentialView {
   @JsonProperty private final CredentialId id;
   @JsonProperty private final UserId userId;
+  @JsonProperty private final Optional<String> nickname;
   @JsonProperty private final Optional<Instant> createTime;
   @JsonProperty private final Optional<Instant> lastUseTime;
 }

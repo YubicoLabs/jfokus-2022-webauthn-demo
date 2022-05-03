@@ -237,7 +237,8 @@ public class DemoApplication {
                       .response(response.getCredential())
                       .build());
 
-          database.storeWebauthnCredential(userId.get(), response.getCredential(), registration);
+          database.storeWebauthnCredential(
+              userId.get(), response.getCredential(), registration, response.getNickname());
 
           return Either.right(new SuccessfulRegistrationResult());
 

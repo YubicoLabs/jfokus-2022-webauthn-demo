@@ -20,6 +20,7 @@ import com.yubico.webauthn.data.AuthenticatorAttestationResponse;
 import com.yubico.webauthn.data.ByteArray;
 import com.yubico.webauthn.data.ClientRegistrationExtensionOutputs;
 import com.yubico.webauthn.data.PublicKeyCredential;
+import java.util.Optional;
 import lombok.Value;
 
 @Value
@@ -31,13 +32,17 @@ public class RegistrationResponse {
           AuthenticatorAttestationResponse, ClientRegistrationExtensionOutputs>
       credential;
 
+  private final Optional<String> nickname;
+
   @JsonCreator
   public RegistrationResponse(
       @JsonProperty("requestId") ByteArray requestId,
       @JsonProperty("credential")
           PublicKeyCredential<AuthenticatorAttestationResponse, ClientRegistrationExtensionOutputs>
-              credential) {
+              credential,
+      @JsonProperty("nickname") Optional<String> nickname) {
     this.requestId = requestId;
     this.credential = credential;
+    this.nickname = nickname;
   }
 }

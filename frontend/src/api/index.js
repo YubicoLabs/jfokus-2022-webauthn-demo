@@ -33,10 +33,11 @@ export function register() {
   return handle(apiUrl('register'), 'POST', formData);
 }
 
-export function registerFinish(request, pkc) {
+export function registerFinish(request, pkc, nickname) {
   return handle(request.actions.finish, 'POST', {
     requestId: request.request.requestId,
     credential: pkc,
+    nickname,
   });
 }
 

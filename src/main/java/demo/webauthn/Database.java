@@ -248,6 +248,7 @@ public class Database implements CredentialRepository {
                     new WebauthnCredentialView(
                         new CredentialId(id),
                         new UserId(record.getUserId()),
+                        Optional.ofNullable(record.getNickname()),
                         Optional.ofNullable(record.getCreateTime()).map(Database::toInstant),
                         Optional.ofNullable(record.getLastUseTime()).map(Database::toInstant)));
               } catch (Exception e) {
@@ -274,7 +275,8 @@ public class Database implements CredentialRepository {
       final PublicKeyCredential<
               AuthenticatorAttestationResponse, ClientRegistrationExtensionOutputs>
           credential,
-      final RegistrationResult registrationResult) {
+      final RegistrationResult registrationResult,
+      final Optional<String> nickname) {
 
     final int numInserted =
         jooq()
@@ -285,6 +287,7 @@ public class Database implements CredentialRepository {
                   return dsl.insertInto(Tables.WEBAUTHN_CREDENTIALS)
                       .set(Tables.WEBAUTHN_CREDENTIALS.USER_ID, userId.getId())
                       .set(Tables.WEBAUTHN_CREDENTIALS.CREDENTIAL_ID, credential.getId().getBytes())
+                      .set(Tables.WEBAUTHN_CREDENTIALS.NICKNAME, nickname.orElse(null))
                       .set(Tables.WEBAUTHN_CREDENTIALS.CREATE_TIME, now())
                       .set(Tables.WEBAUTHN_CREDENTIALS.LAST_USE_TIME, now())
                       .set(

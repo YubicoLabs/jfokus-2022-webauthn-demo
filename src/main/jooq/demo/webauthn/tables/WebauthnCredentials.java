@@ -18,7 +18,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row7;
+import org.jooq.Row8;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -35,7 +35,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class WebauthnCredentials extends TableImpl<WebauthnCredentialsRecord> {
 
-    private static final long serialVersionUID = -581632693;
+    private static final long serialVersionUID = 486167836;
 
     /**
      * The reference instance of <code>webauthn_demo.webauthn_credentials</code>
@@ -59,6 +59,11 @@ public class WebauthnCredentials extends TableImpl<WebauthnCredentialsRecord> {
      * The column <code>webauthn_demo.webauthn_credentials.credential_id</code>.
      */
     public final TableField<WebauthnCredentialsRecord, byte[]> CREDENTIAL_ID = createField(DSL.name("credential_id"), org.jooq.impl.SQLDataType.VARBINARY(1023).nullable(false), this, "");
+
+    /**
+     * The column <code>webauthn_demo.webauthn_credentials.nickname</code>.
+     */
+    public final TableField<WebauthnCredentialsRecord, String> NICKNAME = createField(DSL.name("nickname"), org.jooq.impl.SQLDataType.VARCHAR(256), this, "");
 
     /**
      * The column <code>webauthn_demo.webauthn_credentials.create_time</code>.
@@ -174,11 +179,11 @@ public class WebauthnCredentials extends TableImpl<WebauthnCredentialsRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row7 type methods
+    // Row8 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row7<String, byte[], LocalDateTime, LocalDateTime, UInteger, String, byte[]> fieldsRow() {
-        return (Row7) super.fieldsRow();
+    public Row8<String, byte[], String, LocalDateTime, LocalDateTime, UInteger, String, byte[]> fieldsRow() {
+        return (Row8) super.fieldsRow();
     }
 }
