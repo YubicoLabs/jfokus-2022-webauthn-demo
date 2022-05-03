@@ -250,7 +250,8 @@ public class Database implements CredentialRepository {
                         new UserId(record.getUserId()),
                         Optional.ofNullable(record.getNickname()),
                         Optional.ofNullable(record.getCreateTime()).map(Database::toInstant),
-                        Optional.ofNullable(record.getLastUseTime()).map(Database::toInstant)));
+                        Optional.ofNullable(record.getLastUseTime()).map(Database::toInstant),
+                        record.getDiscoverable() && record.getUvCapable()));
               } catch (Exception e) {
                 log.error("Failed to decode WebAuthn credential: {}", id, e);
                 return Stream.empty();
@@ -303,6 +304,12 @@ public class Database implements CredentialRepository {
                       .set(
                           Tables.WEBAUTHN_CREDENTIALS.PUBLIC_KEY_COSE,
                           registrationResult.getPublicKeyCose().getBytes())
+                      .set(
+                          Tables.WEBAUTHN_CREDENTIALS.DISCOVERABLE,
+                          registrationResult.isDiscoverable().orElse(false))
+                      .set(
+                          Tables.WEBAUTHN_CREDENTIALS.UV_CAPABLE,
+                          credential.getResponse().getParsedAuthenticatorData().getFlags().UV)
                       .execute();
                 });
 
@@ -310,11 +317,22 @@ public class Database implements CredentialRepository {
   }
 
   public void updateWebauthnCredential(
-      final UserId userId, final CredentialId credentialId, final long signatureCount) {
-    log.info("Update credential {}/{}: signatureCount={}", userId, credentialId, signatureCount);
+      final UserId userId,
+      final CredentialId credentialId,
+      final long signatureCount,
+      final boolean uv) {
+    log.info(
+        "Update credential {}/{}: signatureCount={}, uv={}",
+        userId,
+        credentialId,
+        signatureCount,
+        uv);
     jooq()
         .update(Tables.WEBAUTHN_CREDENTIALS)
         .set(Tables.WEBAUTHN_CREDENTIALS.SIGNATURE_COUNT, UInteger.valueOf(signatureCount))
+        .set(
+            Tables.WEBAUTHN_CREDENTIALS.UV_CAPABLE,
+            Tables.WEBAUTHN_CREDENTIALS.UV_CAPABLE.bitOr(uv))
         .set(Tables.WEBAUTHN_CREDENTIALS.LAST_USE_TIME, now())
         .where(Tables.WEBAUTHN_CREDENTIALS.USER_ID.eq(userId.getId()))
         .and(Tables.WEBAUTHN_CREDENTIALS.CREDENTIAL_ID.eq(credentialId.getId().getBytes()))

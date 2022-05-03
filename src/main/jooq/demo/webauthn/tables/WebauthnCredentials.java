@@ -18,7 +18,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row8;
+import org.jooq.Row10;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -35,7 +35,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class WebauthnCredentials extends TableImpl<WebauthnCredentialsRecord> {
 
-    private static final long serialVersionUID = 486167836;
+    private static final long serialVersionUID = 1034131987;
 
     /**
      * The reference instance of <code>webauthn_demo.webauthn_credentials</code>
@@ -89,6 +89,16 @@ public class WebauthnCredentials extends TableImpl<WebauthnCredentialsRecord> {
      * The column <code>webauthn_demo.webauthn_credentials.public_key_cose</code>.
      */
     public final TableField<WebauthnCredentialsRecord, byte[]> PUBLIC_KEY_COSE = createField(DSL.name("public_key_cose"), org.jooq.impl.SQLDataType.BLOB.nullable(false), this, "");
+
+    /**
+     * The column <code>webauthn_demo.webauthn_credentials.discoverable</code>.
+     */
+    public final TableField<WebauthnCredentialsRecord, Boolean> DISCOVERABLE = createField(DSL.name("discoverable"), org.jooq.impl.SQLDataType.BIT.defaultValue(org.jooq.impl.DSL.inline("b'0'", org.jooq.impl.SQLDataType.BIT)), this, "");
+
+    /**
+     * The column <code>webauthn_demo.webauthn_credentials.uv_capable</code>.
+     */
+    public final TableField<WebauthnCredentialsRecord, Boolean> UV_CAPABLE = createField(DSL.name("uv_capable"), org.jooq.impl.SQLDataType.BIT.defaultValue(org.jooq.impl.DSL.inline("b'0'", org.jooq.impl.SQLDataType.BIT)), this, "");
 
     /**
      * Create a <code>webauthn_demo.webauthn_credentials</code> table reference
@@ -179,11 +189,11 @@ public class WebauthnCredentials extends TableImpl<WebauthnCredentialsRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row8 type methods
+    // Row10 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row8<String, byte[], String, LocalDateTime, LocalDateTime, UInteger, String, byte[]> fieldsRow() {
-        return (Row8) super.fieldsRow();
+    public Row10<String, byte[], String, LocalDateTime, LocalDateTime, UInteger, String, byte[], Boolean, Boolean> fieldsRow() {
+        return (Row10) super.fieldsRow();
     }
 }

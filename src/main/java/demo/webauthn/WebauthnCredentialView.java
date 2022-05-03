@@ -27,4 +27,5 @@ public class WebauthnCredentialView {
   @JsonProperty private final Optional<String> nickname;
   @JsonProperty private final Optional<Instant> createTime;
   @JsonProperty private final Optional<Instant> lastUseTime;
+  @JsonProperty private final boolean passwordless;
 }

@@ -314,7 +314,10 @@ public class DemoApplication {
           final UserId userId = Database.userHandleToUserId(result.getUserHandle());
           try {
             database.updateWebauthnCredential(
-                userId, new CredentialId(result.getCredentialId()), result.getSignatureCount());
+                userId,
+                new CredentialId(result.getCredentialId()),
+                result.getSignatureCount(),
+                response.getCredential().getResponse().getParsedAuthenticatorData().getFlags().UV);
           } catch (Exception e) {
             log.error(
                 "Failed to update credential \"{}\" for user \"{}\"",
