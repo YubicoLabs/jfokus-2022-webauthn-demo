@@ -41,6 +41,7 @@ function Main({ classes }) {
 
   const [state, setState] = useState('signin');
   const [sessionInfo, setSessionInfo] = useState(null);
+  const [registerPasswordless, setRegisterPasswordless] = useState(false);
 
   const refreshSession = () => {
     getSession()
@@ -69,6 +70,7 @@ function Main({ classes }) {
           refreshSession();
           setState(null);
         }}
+        passwordless={registerPasswordless}
       />
     );
 
@@ -76,7 +78,12 @@ function Main({ classes }) {
     comp = (
       <UserMainPage
         sessionInfo={sessionInfo}
-        onAddCredential={() => setState('register')}
+        onAddCredential={
+          passwordless => {
+            setRegisterPasswordless(passwordless);
+            setState('register');
+          }
+        }
         onDeleteCredential={onDeleteCredential}
         onLogout={refreshSession}
       />

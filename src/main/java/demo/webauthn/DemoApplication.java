@@ -35,7 +35,9 @@ import com.yubico.webauthn.StartRegistrationOptions;
 import com.yubico.webauthn.data.AuthenticatorSelectionCriteria;
 import com.yubico.webauthn.data.ByteArray;
 import com.yubico.webauthn.data.RelyingPartyIdentity;
+import com.yubico.webauthn.data.ResidentKeyRequirement;
 import com.yubico.webauthn.data.UserIdentity;
+import com.yubico.webauthn.data.UserVerificationRequirement;
 import com.yubico.webauthn.exception.AssertionFailedException;
 import com.yubico.webauthn.exception.RegistrationFailedException;
 import demo.webauthn.data.AssertionRequestWrapper;
@@ -174,7 +176,8 @@ public class DemoApplication {
     }
   }
 
-  public Either<String, RegistrationRequest> startRegistration(SessionToken sessionToken) {
+  public Either<String, RegistrationRequest> startRegistration(
+      SessionToken sessionToken, boolean passwordless) {
     log.trace("startRegistration session: {}", sessionToken);
 
     Optional<UserId> userId = sessions.getSession(sessionToken);
@@ -187,7 +190,17 @@ public class DemoApplication {
                 rp.startRegistration(
                     StartRegistrationOptions.builder()
                         .user(userIdentity.get())
-                        .authenticatorSelection(AuthenticatorSelectionCriteria.builder().build())
+                        .authenticatorSelection(
+                            AuthenticatorSelectionCriteria.builder()
+                                .residentKey(
+                                    passwordless
+                                        ? ResidentKeyRequirement.REQUIRED
+                                        : ResidentKeyRequirement.DISCOURAGED)
+                                .userVerification(
+                                    passwordless
+                                        ? UserVerificationRequirement.REQUIRED
+                                        : UserVerificationRequirement.DISCOURAGED)
+                                .build())
                         .build()));
         registerRequestStorage.put(request.getRequestId(), request);
         return Either.right(request);

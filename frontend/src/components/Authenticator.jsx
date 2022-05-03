@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import dayjs from 'dayjs';
 
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import Button from '@material-ui/core/Button';
+import Checkbox from '@material-ui/core/Checkbox';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
@@ -57,6 +59,9 @@ const styles = theme => ({
     flexShrink: 0,
     color: theme.palette.text.primary,
   },
+  passwordlessCheckbox: {
+    marginLeft: theme.spacing(2),
+  },
 });
 
 function IconContainerComp({ classes, children }) {
@@ -70,6 +75,7 @@ function AuthenticatorComp({
   nickname,
   createTime,
   lastUseTime,
+  passwordless,
   id,
   deleteAuth,
 }) {
@@ -79,6 +85,12 @@ function AuthenticatorComp({
         <div>
           <Typography variant="body1">{nickname}</Typography>
 
+          <Typography color="textSecondary" variant="caption" component="p">
+            Passwordless: {passwordless ? 'Enabled' : 'Disabled'}{' '}
+            {passwordless && (
+              <Checked className={classes.passwordless} color="primary" />
+            )}
+          </Typography>
           <Typography color="textSecondary" variant="caption" component="p">
             Last used: {dayjs(lastUseTime).format('MMMM DD YYYY, h:mm A')}
           </Typography>
@@ -104,6 +116,8 @@ function AuthenticatorsComp({
   onAdd,
   deleteAuth,
 }) {
+  const [addEnablePasswordless, setAddEnablePasswordless] = useState(false);
+
   return (
     <ExpansionPanel defaultExpanded={expanded}>
       <ExpansionPanelSummary
@@ -131,9 +145,20 @@ function AuthenticatorsComp({
         )}
 
         <div>
-          <Button color="primary" onClick={onAdd}>
+          <Button color="primary" onClick={() => onAdd(addEnablePasswordless)}>
             Add credential
           </Button>
+
+          <FormControlLabel
+            className={classes.passwordlessCheckbox}
+            control={
+              <Checkbox
+                checked={addEnablePasswordless}
+                onChange={event => setAddEnablePasswordless(event.target.checked)}
+              />
+            }
+            label="Enable passwordless"
+          />
         </div>
       </ExpansionPanelDetails>
     </ExpansionPanel>

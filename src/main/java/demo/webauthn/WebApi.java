@@ -38,6 +38,7 @@ import java.util.stream.Collectors;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.CookieParam;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -184,10 +185,13 @@ public class WebApi {
   @Consumes("application/x-www-form-urlencoded")
   @Path("register")
   @POST
-  public Response startRegistration(@CookieParam("sessionToken") SessionToken sessionToken)
+  public Response startRegistration(
+      @CookieParam("sessionToken") SessionToken sessionToken,
+      @FormParam("passwordless") @DefaultValue("false") boolean passwordless)
       throws MalformedURLException, ExecutionException {
-    log.trace("startRegistration session: {}", sessionToken);
-    Either<String, RegistrationRequest> result = server.startRegistration(sessionToken);
+    log.trace("startRegistration session: {}, requireResidentKey: {}", sessionToken, passwordless);
+    Either<String, RegistrationRequest> result =
+        server.startRegistration(sessionToken, passwordless);
 
     if (result.isRight()) {
       return startResponse("startRegistration", new StartRegistrationResponse(result.right().get()))

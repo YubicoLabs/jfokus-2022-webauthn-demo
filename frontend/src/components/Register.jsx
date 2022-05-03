@@ -38,6 +38,7 @@ const styles = theme => ({
 
 function Register({
   classes,
+  passwordless,
   onAbort,
   onSuccess,
 }) {
@@ -48,7 +49,7 @@ function Register({
 
   const runRegistration = () => {
     setSubmitting(true);
-    register()
+    register(passwordless)
       .finally(() => setSubmitting(false))
       .then(data => {
         setWebauthnInProgress(true);

@@ -28,8 +28,9 @@ export function removeAuthenticator(id) {
   return handle(apiUrl(`credential/${id}`), 'DELETE');
 }
 
-export function register() {
+export function register(passwordless) {
   const formData = new URLSearchParams();
+  formData.append('passwordless', passwordless || false);
   return handle(apiUrl('register'), 'POST', formData);
 }
 
