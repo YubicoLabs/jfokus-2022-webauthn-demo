@@ -7,3 +7,9 @@ gradlew text eol=lf
 
 # Always treat these as CRLF
 *.bat text eol=crlf
+
+# Exclude jOOQ generated code from diffs
+/src/main/jooq/** -diff
+
+# Exclude package-lock.json from diffs
+/frontend/package-lock.json -diff
