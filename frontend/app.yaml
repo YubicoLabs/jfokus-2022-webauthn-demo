@@ -1,0 +1,8 @@
+runtime: custom
+env: flex
+service: staticfe
+
+skip_files:
+  - ^src/
+  - ^node_modules/
+

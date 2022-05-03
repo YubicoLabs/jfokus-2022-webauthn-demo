@@ -1,0 +1,17 @@
+version: "3.4"
+services:
+
+  mysql:
+    image: mysql:8
+    volumes:
+      - webauthn_demo_db:/var/lib/mysql
+    environment:
+      - "MYSQL_RANDOM_ROOT_PASSWORD=yes"
+      - "MYSQL_USER=webauthn_demo"
+      - "MYSQL_PASSWORD=1234"
+      - "MYSQL_DATABASE=webauthn_demo"
+    ports:
+      - "0.0.0.0:3306:3306"
+
+volumes:
+  webauthn_demo_db:

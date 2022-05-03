@@ -1,0 +1,170 @@
+extends:
+  - eslint:all
+  - google
+  - plugin:react/all
+
+parser: 'babel-eslint'
+parserOptions:
+  sourceType: module
+  ecmaFeatures:
+    jsx: true
+  ecmaVersion: 2018
+  allowImportExportEverywhere: true
+
+settings:
+  react:
+    version: "detect"
+
+env:
+  browser: true
+  es6: true
+  node: true
+
+plugins:
+  - react-hooks
+
+globals:
+  PROJECT_NAME: true
+  VERSION: true
+
+rules:
+  no-warning-comments: [warn]
+  no-unused-vars:
+    - warn
+    -
+      varsIgnorePattern: "_"
+  max-lines-per-function: [warn]
+  arrow-parens: [error, as-needed]
+  brace-style: [error, 1tbs, allowSingleLine: true]
+  block-spacing: [error, always]
+  capitalized-comments: off
+  class-methods-use-this: off
+  dot-location: [error, property]
+  id-length: off
+  indent:
+    - warn
+    - 2
+    - SwitchCase: 1
+      FunctionDeclaration:
+        parameters: 2
+      FunctionExpression:
+        parameters: 2
+  func-names: [error, as-needed]
+  func-style: off
+  function-paren-newline: off
+  implicit-arrow-linebreak: off
+  multiline-ternary: [error, always-multiline]
+  newline-per-chained-call:
+    - error
+    - ignoreChainWithDepth: 2
+  no-nested-ternary: off
+  no-ternary: off
+  semi-style: off
+  sort-imports: off
+  sort-keys: off
+  max-len: off
+  max-lines: warn
+  multiline-comment-style: warn
+  new-cap:
+    - error
+    - capIsNewExceptions:
+      - List
+      - Map
+      - Range
+      - Record
+  no-console: warn
+  no-else-return: off
+  no-magic-numbers: off
+  object-curly-newline:
+    - error
+    - consistent: true
+      multiline: true
+  object-curly-spacing: off
+  object-property-newline:
+    - error
+    - allowAllPropertiesOnSameLine: true
+  padded-blocks: off
+  no-inline-comments: off
+  line-comment-position: off
+  no-shadow: off
+  no-extra-parens: off
+  no-underscore-dangle: off
+  operator-linebreak: off
+  no-negated-condition: off
+  callback-return: off
+  prefer-promise-reject-errors: warn
+  lines-around-comment: off
+  max-statements: off
+  quote-props: off
+  no-empty-function: off
+  no-use-before-define:
+    - error
+    - functions: false
+  max-params: off
+  max-classes-per-file: off
+  wrap-regex: off
+  quotes: off
+  comma-dangle: off
+  react-hooks/rules-of-hooks: error
+  prefer-named-capture-group: off
+  function-call-argument-newline: off
+  default-param-last: off
+  react-hooks/exhaustive-deps: warn
+  react/function-component-definition: off
+  react/jsx-curly-brace-presence: off
+  react/jsx-no-useless-fragment: off
+  react/static-property-placement: off
+  react/jsx-fragments: off
+  react/forbid-component-props: off
+  react/prefer-stateless-function: off
+  react/jsx-max-props-per-line: off
+  react/prop-types: [warn]
+  react/jsx-one-expression-per-line: off
+  react/jsx-max-depth: [warn]
+  react/jsx-child-element-spacing: [warn]
+  react/jsx-sort-default-props: [warn]
+  react/destructuring-assignment: off
+  react/forbid-prop-types:
+    - warn
+    - checkChildContextTypes: true
+      checkContextTypes: true
+  react/jsx-boolean-value: off
+  react/jsx-closing-bracket-location: [error, line-aligned]
+  react/jsx-closing-tag-location: off
+  react/jsx-curly-spacing: off
+  react/jsx-curly-newline: off
+  react/jsx-handler-names: off
+  react/jsx-indent-props: [error, 2]
+  react/jsx-indent: [error, 2]
+  react/jsx-no-bind: off
+  react/jsx-no-literals: off
+  react/jsx-sort-props: off
+  react/jsx-tag-spacing: off
+  react/jsx-wrap-multilines: off
+  react/no-did-mount-set-state: [error, disallow-in-func]
+  react/no-did-update-set-state: [error, disallow-in-func]
+  react/no-multi-comp: off
+  react/no-set-state: off
+  react/no-will-update-set-state: [error, disallow-in-func]
+  react/require-default-props: off
+  react/require-optimization: warn
+  react/sort-comp:
+    - error
+    - order:
+      - static-methods
+      - lifecycle
+      - everything-else
+      - /^on[A-Z].*$/
+      - /^render.+$/
+      - render
+  react/sort-prop-types:
+    - error
+    - callbacksLast: true
+      ignoreCase: true
+      requiredFirst: true
+      sortShapeProp: true
+  react/jsx-props-no-spreading:
+    - error
+    - html: enforce
+      custom: ignore
+  require-jsdoc: off
