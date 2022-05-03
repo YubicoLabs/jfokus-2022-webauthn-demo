@@ -13,7 +13,7 @@ import {
 
 import VerifyCard from './VerifyCard';
 
-import { login, verifyFinish } from '../api';
+import { login, loginPasswordless, verifyFinish } from '../api';
 
 
 const styles = theme => ({
@@ -42,28 +42,39 @@ function Signin({
   const [submitting, setSubmitting] = useState(false);
   const [webauthnInProgress, setWebauthnInProgress] = useState(false);
 
+  const webauthnAuthenticate = data => {
+    setWebauthnInProgress(true);
+    if (data.userId) {
+      return data;
+    } else if (data.request) {
+      return webauthnJson.get({ publicKey: data.request.publicKeyCredentialRequestOptions })
+        .then(pkc => verifyFinish(data, pkc))
+        .finally(() => setWebauthnInProgress(false));
+    } else {
+      throw new Error('Unknown login result');
+    }
+  };
+
   const handleSubmit = (username, password) => {
     setSubmitting(true);
     login(username, password)
       .finally(() => setSubmitting(false))
-      .then(data => {
-        setWebauthnInProgress(true);
-        if (data.userId) {
-          return data;
-        } else if (data.request) {
-          return webauthnJson.get({ publicKey: data.request.publicKeyCredentialRequestOptions })
-            .then(pkc => verifyFinish(data, pkc))
-            .finally(() => setWebauthnInProgress(false));
-        } else {
-          throw new Error('Unknown login result');
-        }
-      })
+      .then(webauthnAuthenticate)
+      .then(onSuccess);
+  };
+
+  const handlePasswordlessLogin = () => {
+    setSubmitting(true);
+    loginPasswordless()
+      .finally(() => setSubmitting(false))
+      .then(webauthnAuthenticate)
       .then(onSuccess);
   };
 
   let comp = (
     <SigninForm
       onShowRegistration={onShowRegistration}
+      onPasswordlessLogin={handlePasswordlessLogin}
       onSubmit={handleSubmit}
       submitting={submitting}
     />

@@ -166,6 +166,18 @@ public class WebApi {
     }
   }
 
+  @Path("authenticate-passwordless")
+  @POST
+  public Response loginPasswordless() throws MalformedURLException, ExecutionException {
+
+    Either<List<String>, AssertionRequestWrapper> request =
+        server.startAuthenticationPasswordless();
+    return startResponse(
+            "startAuthenticationPasswordless",
+            new StartAuthenticationResponse(request.right().get()))
+        .build();
+  }
+
   private final class StartRegistrationResponse {
     public final boolean success = true;
     public final RegistrationRequest request;
@@ -262,6 +274,12 @@ public class WebApi {
                     + result.right().get().getSessionToken().getValue()
                     + ";Secure;HttpOnly;SameSite=strict;Path=/"))
         .build();
+  }
+
+  @Path("authenticate-passwordless/finish")
+  @POST
+  public Response finishAuthenticationPasswordless(@NonNull String responseJson) {
+    return finishAuthentication(responseJson);
   }
 
   @Path("credential/{credentialId}")

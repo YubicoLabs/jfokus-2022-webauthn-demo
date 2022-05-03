@@ -35,6 +35,7 @@ function SigninForm({
   onSubmit,
   classes,
   onShowRegistration,
+  onPasswordlessLogin,
   submitting = false,
 }) {
 
@@ -89,6 +90,10 @@ function SigninForm({
           </span>{' '}
           to create a new account.
         </Typography>
+
+        <ClickableText onClick={onPasswordlessLogin}>
+          If you have enabled passwordless login, click here to sign in.
+        </ClickableText>
       </div>
 
       <div className={classes.buttons}>

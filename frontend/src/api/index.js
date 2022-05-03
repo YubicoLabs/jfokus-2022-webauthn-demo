@@ -16,6 +16,10 @@ export function login(username, password) {
   return handle(apiUrl('authenticate'), 'POST', formData);
 }
 
+export function loginPasswordless() {
+  return handle(apiUrl('authenticate-passwordless'), 'POST');
+}
+
 export function logout() {
   return handle(apiUrl('logout'), 'POST');
 }

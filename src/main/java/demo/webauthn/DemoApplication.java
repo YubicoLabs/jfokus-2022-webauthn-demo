@@ -287,6 +287,22 @@ public class DemoApplication {
     return Either.right(request);
   }
 
+  public Either<List<String>, AssertionRequestWrapper> startAuthenticationPasswordless() {
+    log.trace("startAuthentication passwordless");
+
+    AssertionRequestWrapper request =
+        new AssertionRequestWrapper(
+            generateRandom(32),
+            rp.startAssertion(
+                StartAssertionOptions.builder()
+                    .userVerification(UserVerificationRequirement.REQUIRED)
+                    .build()));
+
+    assertRequestStorage.put(request.getRequestId(), request);
+
+    return Either.right(request);
+  }
+
   @Value
   public static class SuccessfulAuthenticationResult {
     boolean success = true;
