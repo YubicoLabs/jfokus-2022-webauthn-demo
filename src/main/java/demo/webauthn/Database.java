@@ -310,6 +310,12 @@ public class Database implements CredentialRepository {
                       .set(
                           Tables.WEBAUTHN_CREDENTIALS.UV_CAPABLE,
                           credential.getResponse().getParsedAuthenticatorData().getFlags().UV)
+                      .set(
+                          Tables.WEBAUTHN_CREDENTIALS.ATTESTATION_OBJECT,
+                          credential.getResponse().getAttestationObject().getBytes())
+                      .set(
+                          Tables.WEBAUTHN_CREDENTIALS.CREATE_CLIENTDATAJSON,
+                          credential.getResponse().getClientDataJSON().getBytes())
                       .execute();
                 });
 

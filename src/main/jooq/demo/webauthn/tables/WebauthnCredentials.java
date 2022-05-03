@@ -18,7 +18,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row10;
+import org.jooq.Row12;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -35,7 +35,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class WebauthnCredentials extends TableImpl<WebauthnCredentialsRecord> {
 
-    private static final long serialVersionUID = 1034131987;
+    private static final long serialVersionUID = -1544616009;
 
     /**
      * The reference instance of <code>webauthn_demo.webauthn_credentials</code>
@@ -99,6 +99,16 @@ public class WebauthnCredentials extends TableImpl<WebauthnCredentialsRecord> {
      * The column <code>webauthn_demo.webauthn_credentials.uv_capable</code>.
      */
     public final TableField<WebauthnCredentialsRecord, Boolean> UV_CAPABLE = createField(DSL.name("uv_capable"), org.jooq.impl.SQLDataType.BIT.defaultValue(org.jooq.impl.DSL.inline("b'0'", org.jooq.impl.SQLDataType.BIT)), this, "");
+
+    /**
+     * The column <code>webauthn_demo.webauthn_credentials.attestation_object</code>.
+     */
+    public final TableField<WebauthnCredentialsRecord, byte[]> ATTESTATION_OBJECT = createField(DSL.name("attestation_object"), org.jooq.impl.SQLDataType.BLOB, this, "");
+
+    /**
+     * The column <code>webauthn_demo.webauthn_credentials.create_clientDataJSON</code>.
+     */
+    public final TableField<WebauthnCredentialsRecord, byte[]> CREATE_CLIENTDATAJSON = createField(DSL.name("create_clientDataJSON"), org.jooq.impl.SQLDataType.BLOB, this, "");
 
     /**
      * Create a <code>webauthn_demo.webauthn_credentials</code> table reference
@@ -189,11 +199,11 @@ public class WebauthnCredentials extends TableImpl<WebauthnCredentialsRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row10 type methods
+    // Row12 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row10<String, byte[], String, LocalDateTime, LocalDateTime, UInteger, String, byte[], Boolean, Boolean> fieldsRow() {
-        return (Row10) super.fieldsRow();
+    public Row12<String, byte[], String, LocalDateTime, LocalDateTime, UInteger, String, byte[], Boolean, Boolean, byte[], byte[]> fieldsRow() {
+        return (Row12) super.fieldsRow();
     }
 }

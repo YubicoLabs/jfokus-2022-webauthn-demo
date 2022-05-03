@@ -32,6 +32,7 @@ import com.yubico.webauthn.RegistrationResult;
 import com.yubico.webauthn.RelyingParty;
 import com.yubico.webauthn.StartAssertionOptions;
 import com.yubico.webauthn.StartRegistrationOptions;
+import com.yubico.webauthn.data.AttestationConveyancePreference;
 import com.yubico.webauthn.data.AuthenticatorSelectionCriteria;
 import com.yubico.webauthn.data.ByteArray;
 import com.yubico.webauthn.data.RelyingPartyIdentity;
@@ -97,6 +98,7 @@ public class DemoApplication {
             .identity(rpIdentity)
             .credentialRepository(this.database)
             .origins(origins)
+            .attestationConveyancePreference(Optional.of(AttestationConveyancePreference.DIRECT))
             .build();
   }
 
